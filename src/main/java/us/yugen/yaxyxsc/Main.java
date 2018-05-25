@@ -1,10 +1,16 @@
 package us.yugen.yaxyxsc;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 /**
  * @author Andreas Hartmann
  */
+@EnableAutoConfiguration
+@SpringBootApplication
 public class Main {
-    public static void main(final String[] args) {
-        System.out.println("Abandon hope all ye who enter here.");
+    public static void main(String[] args) {
+        SpringApplication.run(MainController.class, args);
     }
 }
