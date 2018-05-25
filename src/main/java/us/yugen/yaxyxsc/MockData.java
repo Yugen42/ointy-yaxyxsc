@@ -1,5 +1,6 @@
 package us.yugen.yaxyxsc;
 
+import com.javadocmd.simplelatlng.LatLng;
 import us.yugen.yaxyxsc.entities.Address;
 import us.yugen.yaxyxsc.entities.User;
 
@@ -23,7 +24,8 @@ public class MockData {
     }
 
     static Address getRandomAddress() {
-        return new Address(new Random().nextInt(12), new Random().nextInt(49), new Random().nextInt(95000), getRandom(cities), getRandom(streets), new Random().nextInt(5000));
+        var pos = LatLng.random();
+        return new Address(pos.getLongitude(),pos.getLatitude(), new Random().nextInt(95000), getRandom(cities), getRandom(streets), new Random().nextInt(5000));
     }
 
 
