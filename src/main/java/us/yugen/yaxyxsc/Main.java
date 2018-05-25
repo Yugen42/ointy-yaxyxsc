@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoConfiguration
 @SpringBootApplication
 public class Main {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         MockData.mockData();
         SpringApplication.run(MainController.class, args);
     }
