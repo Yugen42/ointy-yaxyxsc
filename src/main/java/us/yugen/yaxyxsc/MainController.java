@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import us.yugen.yaxyxsc.entities.BuyingList;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class MainController {
         allLists.add(testListA);
 
         Gson gson = new Gson();
-        final String s = gson.toJson(allLists);
+        final String s = gson.toJson(DataStore.user);
 
         return s;
     }
