@@ -19,7 +19,10 @@ final class MainController {
 
     private static final Gson GSON = new Gson();
 
-    @RequestMapping("/ShoppingLists")
+    private MainController() {
+    }
+
+    @RequestMapping("/shoppingLists")
     @ResponseBody
     final String getShoppingLists() {
 

@@ -1,5 +1,6 @@
 package us.yugen.yaxyxsc.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  */
 public class ShoppingList {
     public User owner;
+    public BigDecimal bounty = new BigDecimal("3.50");
     public List<String> tags = new ArrayList<>();
     public List<String> items = new ArrayList<>();
 
