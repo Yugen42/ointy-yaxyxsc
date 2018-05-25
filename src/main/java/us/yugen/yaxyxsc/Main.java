@@ -5,6 +5,6 @@ package us.yugen.yaxyxsc;
  */
 public class Main {
     public static void main(final String[] args) {
-
+        System.out.println("Abandon hope all ye who enter here.");
     }
 }
