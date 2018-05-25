@@ -1,5 +1,6 @@
 package us.yugen.yaxyxsc.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,5 +8,6 @@ import java.util.List;
  */
 public class ShoppingList {
     public User owner;
-    public List<String> items;
+    public List<String> tags = new ArrayList<>();
+    public List<String> items = new ArrayList<>();
 }
