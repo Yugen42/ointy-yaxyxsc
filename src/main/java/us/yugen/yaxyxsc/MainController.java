@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @EnableAutoConfiguration
-public class MainController {
+final class MainController {
 
     private static final Gson GSON = new Gson();
 
@@ -27,7 +27,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/shoppingList", method = RequestMethod.POST)
-    final String postShoppingList(@RequestBody ShoppingList shoppingList) {
+    String postShoppingList(@RequestBody ShoppingList shoppingList) {
         //TODO
 
         return GSON.toJson(ResponseEntity.ok());
