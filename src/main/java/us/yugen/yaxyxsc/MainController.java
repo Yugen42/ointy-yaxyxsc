@@ -2,12 +2,13 @@ package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,11 @@ import java.util.List;
 @EnableAutoConfiguration
 public class MainController {
 
+    private static final Gson GSON = new Gson();
+
     @RequestMapping("/ShoppingLists")
     @ResponseBody
-    String getShoppingLists() {
+    final String getShoppingLists() {
         List<ShoppingList> allLists = new ArrayList<>();
 
         ShoppingList testListA = new ShoppingList();
@@ -28,12 +31,12 @@ public class MainController {
 
         allLists.add(testListA);
 
-        Gson gson = new Gson();
-        final String s = gson.toJson(DataStore.user);
-
-        return s;
+        return GSON.toJson(DataStore.user);
     }
 
-    //@RequestMapping(value = "/buyingList", method = RequestMethod.POST)
-    //String postShoppingList
+    @RequestMapping(value = "/shoppingList", method = RequestMethod.POST)
+    final String postShoppingList() {
+
+        return GSON.toJson(ResponseEntity.ok());
+    }
 }
