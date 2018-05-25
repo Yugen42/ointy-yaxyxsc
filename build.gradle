@@ -21,6 +21,12 @@ bootJar {
     version = '1.0.0-SNAPSHOT'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'us.yugen.yaxyxsc.Main'
+    }
+}
+
 repositories {
     mavenCentral()
 }

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author Andreas Hartmann
  */
-public class BuyingList {
+public class ShoppingList {
     public User owner;
     public List<String> items;
 }

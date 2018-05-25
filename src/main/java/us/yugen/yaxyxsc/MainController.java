@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import us.yugen.yaxyxsc.entities.BuyingList;
+import us.yugen.yaxyxsc.entities.ShoppingList;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -15,12 +15,12 @@ import java.util.List;
 @EnableAutoConfiguration
 public class MainController {
 
-    @RequestMapping("/buyingLists")
+    @RequestMapping("/ShoppingLists")
     @ResponseBody
-    String home() {
-        List<BuyingList> allLists = new ArrayList<>();
+    String getShoppingLists() {
+        List<ShoppingList> allLists = new ArrayList<>();
 
-        BuyingList testListA = new BuyingList();
+        ShoppingList testListA = new ShoppingList();
         List<String> itemList = new ArrayList<>();
         itemList.add("Condoms XXS");
         itemList.add("tampons");
@@ -33,4 +33,7 @@ public class MainController {
 
         return s;
     }
+
+    //@RequestMapping(value = "/buyingList", method = RequestMethod.POST)
+    //String postShoppingList
 }
