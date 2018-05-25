@@ -22,17 +22,8 @@ public class MainController {
     @RequestMapping("/ShoppingLists")
     @ResponseBody
     final String getShoppingLists() {
-        List<ShoppingList> allLists = new ArrayList<>();
 
-        ShoppingList testListA = new ShoppingList();
-        List<String> itemList = new ArrayList<>();
-        itemList.add("Condoms XXS");
-        itemList.add("tampons");
-        testListA.items = itemList;
-
-        allLists.add(testListA);
-
-        return GSON.toJson(DataStore.user);
+        return GSON.toJson(DataStore.SHOPPING_LISTS);
     }
 
     @RequestMapping(value = "/shoppingList", method = RequestMethod.POST)

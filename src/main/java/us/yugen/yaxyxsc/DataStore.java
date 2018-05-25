@@ -8,5 +8,5 @@ import java.util.List;
 
 public class DataStore {
     public static final List<ShoppingList> SHOPPING_LISTS = new ArrayList<>();
-    public static final List<User> user = new ArrayList<>();
+    public static final List<User> USERS = new ArrayList<>();
 }
