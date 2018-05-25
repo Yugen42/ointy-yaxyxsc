@@ -1,5 +1,6 @@
 package us.yugen.yaxyxsc;
 
+import com.google.gson.Gson;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ import java.util.List;
 @EnableAutoConfiguration
 public class MainController {
 
-    @RequestMapping("/getBuyingLists")
+    @RequestMapping("/buyingLists")
     @ResponseBody
     String home() {
         List<BuyingList> allLists = new ArrayList<>();
@@ -24,6 +25,10 @@ public class MainController {
         testListA.items = itemList;
 
         allLists.add(testListA);
-        return "all";
+
+        Gson gson = new Gson();
+        final String s = gson.toJson(allLists);
+
+        return s;
     }
 }
