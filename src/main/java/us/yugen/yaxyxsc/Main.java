@@ -5,8 +5,6 @@ package us.yugen.yaxyxsc;
  */
 public class Main {
     public static void main(final String[] args) {
-        var test = "Hallo";
-        System.out.print(test);
-
+        System.out.println("Abandon hope all ye who enter here.");
     }
 }
