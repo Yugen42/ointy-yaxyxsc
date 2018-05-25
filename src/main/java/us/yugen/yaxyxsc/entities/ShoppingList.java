@@ -8,10 +8,12 @@ import java.util.List;
  * @author Andreas Hartmann
  */
 public class ShoppingList {
+    private static int nextID = 1;
     public User owner;
     public BigDecimal bounty = new BigDecimal("3.50");
     public List<String> tags = new ArrayList<>();
     public List<String> items = new ArrayList<>();
+    public int id = nextID++;
 
     public ShoppingList(User owner, List<String> tags, List<String> items) {
         this.owner = owner;
