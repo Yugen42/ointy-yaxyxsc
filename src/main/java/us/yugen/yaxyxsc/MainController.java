@@ -15,13 +15,13 @@ import java.util.List;
 
 @Controller
 @EnableAutoConfiguration
-public class MainController {
+final class MainController {
 
     private static final Gson GSON = new Gson();
 
     @RequestMapping("/ShoppingLists")
     @ResponseBody
-    final String getShoppingLists() {
+    String getShoppingLists() {
         List<ShoppingList> allLists = new ArrayList<>();
 
         ShoppingList testListA = new ShoppingList();
@@ -36,7 +36,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/shoppingList", method = RequestMethod.POST)
-    final String postShoppingList(@RequestBody ShoppingList shoppingList) {
+    String postShoppingList(@RequestBody ShoppingList shoppingList) {
         //TODO
 
         return GSON.toJson(ResponseEntity.ok());
