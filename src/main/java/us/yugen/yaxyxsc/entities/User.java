@@ -8,4 +8,11 @@ public class User {
     public String firstName;
     public String lastName;
     public Address address;
+
+    public User(int id, String firstName, String lastName, Address address) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+    }
 }
