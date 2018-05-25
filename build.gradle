@@ -1,0 +1,30 @@
+apply plugin: 'java'
+
+group 'us.yugen.ointy'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 10
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.5.1'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
