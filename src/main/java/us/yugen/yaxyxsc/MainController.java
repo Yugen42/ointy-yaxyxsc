@@ -20,6 +20,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
+import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -199,9 +200,17 @@ class MainController extends WebMvcConfigurationSupport {
             }
         }
 
+        User foundUser = null;
+        for (User user : DataStore.USERS) {
+            if(user.id == userId) {
+                foundUser = user;
+            }
+        }
+
+
         final Collection<ShoppingList> shoppingLists = new HashSet<>();
         for (final Tag relevantTag : relevantTags) {
-            shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, longitude, latitude));
+            shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, foundUser.address.longitude, foundUser.address.latitude));
         }
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
