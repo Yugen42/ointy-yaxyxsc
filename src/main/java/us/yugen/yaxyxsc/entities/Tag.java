@@ -12,8 +12,7 @@ public enum Tag {
     GROCERY_STORE,
     BAKERY,
     PHARMACY,
-    HARDWARE_STORE,
-    SEX_SHOP;
+    HARDWARE_STORE;
 
     private static final List<Tag> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));
@@ -116,7 +115,7 @@ public enum Tag {
             case "travel_agency":
             case "veterinary_care":
             case "zoo":
-            default: return SEX_SHOP;
+            default: return GROCERY_STORE;
         }
     }
 }

@@ -32,7 +32,9 @@ import java.io.InputStream;
 import javax.xml.crypto.Data;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -191,24 +193,22 @@ class MainController extends WebMvcConfigurationSupport {
         GooglePlaces client = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
 
         List<Place> places = client.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
-        List<JSONObject> jsons = new ArrayList<>();
 
-
+        final Set<Tag> relevantTags = new HashSet<>();
 
         for (Place place : places) {
 
-            List<ShoppingList> relevantLists = new ArrayList<>();
-
             for (String s : place.getTypes()) {
-                Tag.mapToTag(s);
+                relevantTags.add(Tag.mapToTag(s));
             }
-
-
-            jsons.add(place.getJson());
         }
 
+        final Set<ShoppingList> shoppingLists = new HashSet<>();
+        for (Tag relevantTag : relevantTags) {
+           shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, longitude, latitude));
+        }
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(jsons));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
     }
 
 
