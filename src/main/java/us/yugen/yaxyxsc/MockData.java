@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 
 public class MockData {
     public static void mockData() {
-        DataStore.USERS.addAll( generateUser(20));
+        DataStore.USERS.addAll(generateUser(20));
     }
 
     static Faker faker = new Faker();
@@ -23,23 +23,23 @@ public class MockData {
     static private List<User> generateUser(int amount) {
         return IntStream.range(0, amount).mapToObj((i) -> {
             var user = new User(i, faker.name().firstName(), faker.name().lastName(), getRandomAddress());
-            if( new Random().nextInt(100) >= 33) {
+            if (new Random().nextInt(100) >= 33) {
                 DataStore.SHOPPING_LISTS.add(getRandomShopingLists(user));
             }
-            return  user;
+            return user;
         }).collect((Collectors.toList()));
     }
 
     static Address getRandomAddress() {
         var pos = LatLng.random();
-        return new Address(pos.getLongitude(),pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), getRandom(streets), new Random().nextInt(5000));
+        return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), getRandom(streets), new Random().nextInt(5000));
     }
 
-    static ShoppingList getRandomShopingLists(User owner){
-        var items = IntStream.range(0, new Random().nextInt(15)).mapToObj((i) ->  i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
-        var tags =  IntStream.range(0, new Random().nextInt(4)).mapToObj((i) -> faker.commerce().department()).collect(Collectors.toList());
+    static ShoppingList getRandomShopingLists(User owner) {
+        var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
+        var tags = IntStream.range(0, new Random().nextInt(4) + 1).mapToObj((i) -> faker.commerce().department()).collect(Collectors.toList());
 
-        return new ShoppingList(owner,tags, items);
+        return new ShoppingList(owner, tags, items);
     }
 
 

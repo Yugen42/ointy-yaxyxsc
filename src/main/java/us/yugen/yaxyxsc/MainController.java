@@ -2,13 +2,12 @@ package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -34,21 +33,21 @@ final class MainController {
         return GSON.toJson(ResponseEntity.ok());
     }
 
-    @RequestMapping(value = "/shoppingList/{id}", method = RequestMethod.GET)
-    String getShopStringList(@PathVariable int shoppingListID) {
+    @RequestMapping(value = "/shoppingList/{shoppingListID}", method = RequestMethod.GET)
+    ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") int shoppingListID) {
         var shoppingList = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.id == shoppingListID)
                 .findAny().get();
-        return GSON.toJson(shoppingList);
+        return  ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
     }
 
     @RequestMapping(value = "/getListsOfUSer/{userId}", method = RequestMethod.GET)
-    String getListsOfUSer(@PathVariable int userId) {
-        
+    ResponseEntity<String> getListsOfUSer(@PathVariable("userId") int userId) {
+
         var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
         var lists = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.owner.equals(user))
                 .collect(Collectors.toList());
-        return GSON.toJson(lists);
+        return  ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
     }
 }
