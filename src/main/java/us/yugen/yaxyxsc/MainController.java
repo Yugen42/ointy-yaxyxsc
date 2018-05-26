@@ -3,6 +3,8 @@ package us.yugen.yaxyxsc;
 import com.google.gson.Gson;
 import com.javadocmd.simplelatlng.LatLng;
 import com.mashape.unirest.http.Unirest;
+import org.apache.http.client.methods.HttpPost;
+import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.Place;
+import se.walkercrou.places.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -21,6 +26,8 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.xml.crypto.Data;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,6 +39,12 @@ import java.util.stream.Collectors;
 @EnableSwagger2
 @Configuration
 class MainController extends WebMvcConfigurationSupport {
+    private static final Gson GSON = new Gson();
+    private static final double DIST = 0.05d;
+
+    public MainController() {
+    }
+
     @Bean
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -50,13 +63,6 @@ class MainController extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-
-    private static final Gson GSON = new Gson();
-    private static final double DIST = 0.05d;
-
-    public MainController() {
-    }
-
 
     @RequestMapping("/shoppingLists")
     @ResponseBody
@@ -152,37 +158,27 @@ class MainController extends WebMvcConfigurationSupport {
 
     @GetMapping(value = "/getListsRelevantForUser/{userId}/{lang}/{log}")
     ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
-                                                   @PathVariable("lang") final double lang,
-                                                   @PathVariable("log") final double log) {
+                                                   @PathVariable("lang") final double latitude,
+                                                   @PathVariable("log") final double longitude) {
 
-        List<ShoppingList> results = new ArrayList<>();
+        GooglePlaces client = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
 
-        final LatLng curPoss = new LatLng(lang, log);
-        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c&location=" + lang + "," + log + "&radius=100";
-        var body = Unirest.get(url);
+        List<Place> places = client.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
+        List<JSONObject> jsons = new ArrayList<>();
 
-        System.out.println(body);
+        for (Place place : places) {
+            //try {
+            //    place.getClass().getDeclaredField("client").setAccessible(true);
+            //    place.getClass().getDeclaredField("client").set(place, null);
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
 
-        User u = null;
-        final List<User> users = DataStore.USERS;
-        for (User user : users) {
-            if (user.id == userId) {
-                u = user;
-                break;
-            }
-        }
-        if (null == u) return Oh.Not.ok();
-        final User notAllowedUser = u;
-
-        for (final ShoppingList list : DataStore.SHOPPING_LISTS.stream().filter((currList) -> !currList.owner.equals(notAllowedUser)).collect(Collectors.toList())) {
-
-            var d = Math.sqrt(Math.pow(list.owner.address.latitude - u.address.latitude, 2.0d) + Math.pow(list.owner.address.longitude - u.address.longitude, 2.0d));
-            if (d > DIST || d < DIST * -1) {
-                results.add(list);
-            }
+            jsons.add(place.getJson());
         }
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(results));
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(jsons));
     }
 
     @RequestMapping("/")

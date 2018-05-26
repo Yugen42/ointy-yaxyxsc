@@ -45,5 +45,11 @@ dependencies {
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
     // https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java
     compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    compile 'se.walkercrou:google-places-api-java:2.1.2'
+//    compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    // https://mvnrepository.com/artifact/com.google.android/android
+//    compile group: 'com.google.android', name: 'android', version: '4.1.1.4'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 
 }
