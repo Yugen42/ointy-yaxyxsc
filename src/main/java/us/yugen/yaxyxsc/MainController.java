@@ -132,15 +132,24 @@ class MainController extends WebMvcConfigurationSupport {
 
 
     @GetMapping("/shoppingList/{shoppingListID}")
-    ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") int shoppingListID) {
-        var shoppingList = DataStore.SHOPPING_LISTS.stream()
-                .filter(list -> list.id == shoppingListID)
-                .findAny().get();
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
+    ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") final int shoppingListID) {
+        ShoppingList found = null;
+        for (final ShoppingList list : DataStore.SHOPPING_LISTS) {
+            if (list.id == shoppingListID) {
+                found = list;
+                break;
+            }
+        }
+
+        if (null == found) {
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body("No such list.");
+        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(found));
+
     }
 
     @GetMapping("/getListsOfUser/{userId}")
-    ResponseEntity<String> getListsOfUser(@PathVariable("userId") int userId) {
+    ResponseEntity<String> getListsOfUser(@PathVariable("userId") final int userId) {
 
         var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
         var lists = DataStore.SHOPPING_LISTS.stream()

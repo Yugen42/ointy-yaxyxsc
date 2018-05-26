@@ -1,8 +1,6 @@
 package us.yugen.yaxyxsc;
 
 import com.javadocmd.simplelatlng.LatLng;
-import com.javadocmd.simplelatlng.LatLngTool;
-import com.javadocmd.simplelatlng.util.LengthUnit;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
@@ -22,7 +20,7 @@ class DataStore {
                                                           final double latitude) {
         List<ShoppingList> filteredByTag = SHOPPING_LISTS_BY_TAG.get(tag);
 
-        if(null == filteredByTag) return new ArrayList<>();
+        if (null == filteredByTag) return new ArrayList<>();
 
         final LatLng coords = new LatLng(latitude, longitude);
 
@@ -33,7 +31,11 @@ class DataStore {
 
             //hehehe
             //if(LatLngTool.distance(listCoord, coords, LengthUnit.KILOMETER) < 5) {
+
+            //hehehe
+            if (filteredList.isEmpty()) {
                 filteredList.add(shoppingList);
+            }
             //}
         }
         return filteredList;
