@@ -116,6 +116,16 @@ class MainController extends WebMvcConfigurationSupport {
         return Oh.ok();
     }
 
+    @RequestMapping(value = "/shoppingList/{id}/item/{index}", method = RequestMethod.DELETE)
+    ResponseEntity removeItemFromListByIndex(@PathVariable final int id, @PathVariable final int index) {
+        var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
+        if (list == null) {
+            return Oh.Not.ok();
+        }
+        list.items.remove(index);
+        return Oh.ok();
+    }
+
     @ModelAttribute
     public void setVaryResponseHeader(final HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
