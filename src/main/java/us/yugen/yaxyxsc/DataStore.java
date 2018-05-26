@@ -31,6 +31,7 @@ class DataStore {
         for (final ShoppingList shoppingList : filteredByTag) {
             LatLng listCoord = new LatLng(shoppingList.owner.address.latitude, shoppingList.owner.address.longitude);
 
+            //hehehe
             //if(LatLngTool.distance(listCoord, coords, LengthUnit.KILOMETER) < 5) {
                 filteredList.add(shoppingList);
             //}
