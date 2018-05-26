@@ -12,21 +12,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DataStore {
-    public static final List<ShoppingList> SHOPPING_LISTS = new ArrayList<>();
-    public static final Map<Tag, List<ShoppingList>> SHOPPING_LISTS_BY_TAG = new HashMap<>();
-    public static final List<User> USERS = new ArrayList<>();
+class DataStore {
+    static final List<ShoppingList> SHOPPING_LISTS = new ArrayList<>();
+    static final Map<Tag, List<ShoppingList>> SHOPPING_LISTS_BY_TAG = new HashMap<>();
+    static final List<User> USERS = new ArrayList<>();
 
-    public static List<ShoppingList> getShoppingListsByTagInArea(Tag tag, double longitude, double latitude) {
+    static List<ShoppingList> getShoppingListsByTagInArea(final Tag tag,
+                                                          final double longitude,
+                                                          final double latitude) {
         List<ShoppingList> filteredByTag = SHOPPING_LISTS_BY_TAG.get(tag);
 
-        if(filteredByTag == null) return new ArrayList<>();
+        if(null == filteredByTag) return new ArrayList<>();
 
         final LatLng coords = new LatLng(latitude, longitude);
 
-        List<ShoppingList> filteredList = new ArrayList<>();
+        final List<ShoppingList> filteredList = new ArrayList<>();
 
-        for (ShoppingList shoppingList : filteredByTag) {
+        for (final ShoppingList shoppingList : filteredByTag) {
             LatLng listCoord = new LatLng(shoppingList.owner.address.latitude, shoppingList.owner.address.longitude);
 
             //if(LatLngTool.distance(listCoord, coords, LengthUnit.KILOMETER) < 5) {
