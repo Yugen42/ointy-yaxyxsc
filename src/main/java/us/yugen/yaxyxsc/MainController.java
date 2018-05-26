@@ -167,12 +167,7 @@ class MainController extends WebMvcConfigurationSupport {
         List<JSONObject> jsons = new ArrayList<>();
 
         for (Place place : places) {
-            //try {
-            //    place.getClass().getDeclaredField("client").setAccessible(true);
-            //    place.getClass().getDeclaredField("client").set(place, null);
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
+
 
             jsons.add(place.getJson());
         }
