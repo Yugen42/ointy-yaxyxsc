@@ -36,7 +36,7 @@ public class MockData {
     }
 
     static Address getRandomAddress() {
-        var pos = getNearPos(15);
+        var pos = getNearPos(5);
         return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), faker.address().streetPrefix() + faker.address().streetName() + faker.address().streetSuffix(), new Random().nextInt(5000));
     }
 
