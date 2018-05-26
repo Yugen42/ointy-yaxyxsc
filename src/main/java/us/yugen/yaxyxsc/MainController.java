@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -21,16 +22,26 @@ final class MainController {
 
     @RequestMapping("/shoppingLists")
     @ResponseBody
-    final String getShoppingLists() {
+    final ResponseEntity<List<ShoppingList>> getShoppingLists() {
 
-        return GSON.toJson(DataStore.SHOPPING_LISTS);
+        return ResponseEntity.ok(). contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
     }
 
-    @RequestMapping(value = "/shoppingList", method = RequestMethod.POST)
-    String postShoppingList(@RequestBody ShoppingList shoppingList) {
-        //TODO
+    @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.POST)
+    ResponseEntity.BodyBuilder postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
-        return GSON.toJson(ResponseEntity.ok());
+        var list =  new Gson().fromJson(shoppingList,ShoppingList.class);
+
+        var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
+        if( owner == null) {
+            return ResponseEntity.badRequest();
+        }
+
+        list.owner = owner;
+        list.id = DataStore.SHOPPING_LISTS.size();
+        DataStore.SHOPPING_LISTS.add(list);
+
+        return ResponseEntity.ok();
     }
 
     @RequestMapping(value = "/shoppingList/{shoppingListID}", method = RequestMethod.GET)
