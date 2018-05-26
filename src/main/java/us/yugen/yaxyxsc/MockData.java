@@ -47,12 +47,7 @@ public class MockData {
     }
 
     static LatLng getNearPos(double distanceInKm) {
-        LatLng nextpos = null;
-        var i = 0;
-        do {
-            nextpos = LatLng.random();
-        } while (LatLngTool.distance(pos, nextpos, LengthUnit.KILOMETER) > distanceInKm && false);
-        return nextpos;
+         return new LatLng(pos.getLatitude()+ new Random().nextDouble()*.5f, pos.getLongitude() + new Random().nextDouble() *5f);
     }
 
     static String getRandom(String[] array) {
