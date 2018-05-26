@@ -223,12 +223,12 @@ class MainController extends WebMvcConfigurationSupport {
 
 class Oh {
     static ResponseEntity ok() {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("ok");
     }
 
     static class Not {
         static public ResponseEntity ok() {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body("not");
         }
     }
 
