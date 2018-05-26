@@ -41,7 +41,7 @@ public class MockData {
     static ShoppingList getRandomShopingLists(User owner) {
         var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
 
-        return new ShoppingList(owner, Tag.randomTag().name(), items);
+        return new ShoppingList(owner, Tag.randomTag(), items);
     }
 
 
