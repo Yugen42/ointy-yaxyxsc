@@ -18,12 +18,12 @@ public class MockData {
     }
 
     static Faker faker = new Faker();
-    static String[] streets = {"Kaufstraße", "Lolzstr", "Hackerburg"};
+    static String[] cats = {"backery", "other_stuff", "drug_store"};
 
     static private List<User> generateUser(int amount) {
         return IntStream.range(0, amount).mapToObj((i) -> {
             var user = new User(i, faker.name().firstName(), faker.name().lastName(), getRandomAddress());
-            if (new Random().nextInt(100) >= 33) {
+            if (new Random().nextInt(100) >= -1) {
                 DataStore.SHOPPING_LISTS.add(getRandomShopingLists(user));
             }
             return user;
@@ -32,14 +32,13 @@ public class MockData {
 
     static Address getRandomAddress() {
         var pos = LatLng.random();
-        return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), getRandom(streets), new Random().nextInt(5000));
+        return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), faker.address().streetPrefix() + faker.address().streetName() + faker.address().streetSuffix(), new Random().nextInt(5000));
     }
 
     static ShoppingList getRandomShopingLists(User owner) {
         var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
-        var tags = IntStream.range(0, new Random().nextInt(4) + 1).mapToObj((i) -> faker.commerce().department()).collect(Collectors.toList());
 
-        return new ShoppingList(owner, tags, items);
+        return new ShoppingList(owner, getRandom(cats), items);
     }
 
 

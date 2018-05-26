@@ -11,13 +11,13 @@ public class ShoppingList {
     private static int nextID = 1;
     public User owner;
     public BigDecimal bounty = new BigDecimal("3.50");
-    public List<String> tags = new ArrayList<>();
+    public String tag;
     public List<String> items = new ArrayList<>();
     public int id = nextID++;
 
-    public ShoppingList(User owner, List<String> tags, List<String> items) {
+    public ShoppingList(User owner, String tag, List<String> items) {
         this.owner = owner;
-        this.tags = tags;
+        this.tag = tag;
         this.items = items;
     }
 }

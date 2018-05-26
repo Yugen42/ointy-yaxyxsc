@@ -46,6 +46,16 @@ final class MainController {
         return ResponseEntity.ok().body(null);
     }
 
+
+    @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.GET)
+    ResponseEntity<Object> postShoppingList(@PathVariable int ownerId) {
+
+        var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.owner.id == ownerId).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(list);
+    }
+
+
     @RequestMapping(value = "/shoppingList/{shoppingListID}", method = RequestMethod.GET)
     ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") int shoppingListID) {
         var shoppingList = DataStore.SHOPPING_LISTS.stream()
@@ -78,5 +88,5 @@ class Oh {
     public static ResponseEntity ok() {
         return Oh.ok();
     }
-    
+
 }
