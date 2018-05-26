@@ -1,6 +1,8 @@
 package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
+import com.javadocmd.simplelatlng.LatLng;
+import com.mashape.unirest.http.Unirest;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,7 @@ import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,13 +124,18 @@ class MainController extends WebMvcConfigurationSupport {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
-    @RequestMapping(value = "/getListsRelevantForUser/{userId}/{tag}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getListsRelevantForUser/{userId}/{lang}/{log}", method = RequestMethod.GET)
     ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
-                                                   @PathVariable("tag") final String tag) {
+                                                   @PathVariable("lang") final double lang,
+                                                   @PathVariable("log") final double log) {
 
         List<ShoppingList> results = new ArrayList<>();
 
-        final Tag tagEnum = Tag.valueOf(tag);
+        final LatLng curPoss = new LatLng(lang,log);
+        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c&location="+lang+","+log+"&radius=100";
+        var body = Unirest.get(url);
+
+        System.out.println(body);
 
         User u = null;
         final List<User> users = DataStore.USERS;
@@ -138,11 +146,9 @@ class MainController extends WebMvcConfigurationSupport {
             }
         }
         if (null == u) return Oh.Not.ok();
+        final User notAllowedUser = u;
 
-
-        final List<ShoppingList> listOfLists = DataStore.SHOPPING_LISTS_BY_TAG.getOrDefault(tagEnum, Collections.emptyList());
-
-        for (final ShoppingList list : listOfLists) {
+        for (final ShoppingList list : DataStore.SHOPPING_LISTS.stream().filter((currList) -> !currList.owner.equals(notAllowedUser)).collect(Collectors.toList())) {
 
             var d = Math.sqrt(Math.pow(list.owner.address.latitude - u.address.latitude, 2.0d) + Math.pow(list.owner.address.longitude - u.address.longitude, 2.0d));
             if (d > DIST || d < DIST * -1) {
