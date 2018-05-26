@@ -2,8 +2,11 @@ package us.yugen.yaxyxsc;
 
 import com.github.javafaker.Faker;
 import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
 import us.yugen.yaxyxsc.entities.Address;
 import us.yugen.yaxyxsc.entities.ShoppingList;
+import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.xml.crypto.Data;
@@ -38,7 +41,7 @@ public class MockData {
     static ShoppingList getRandomShopingLists(User owner) {
         var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
 
-        return new ShoppingList(owner, getRandom(cats), items);
+        return new ShoppingList(owner, Tag.randomTag().name(), items);
     }
 
 
