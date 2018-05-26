@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javafx.scene.input.KeyCode.T;
-
 @Controller
 @EnableAutoConfiguration
 final class MainController {
@@ -27,16 +25,16 @@ final class MainController {
     @ResponseBody
     final ResponseEntity<List<ShoppingList>> getShoppingLists() {
 
-        return ResponseEntity.ok(). contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
     }
 
     @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.POST)
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
-        var list =  new Gson().fromJson(shoppingList,ShoppingList.class);
+        var list = new Gson().fromJson(shoppingList, ShoppingList.class);
 
         var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
-        if( owner == null) {
+        if (owner == null) {
             return Oh.Not.ok();
         }
 
@@ -62,23 +60,23 @@ final class MainController {
         var shoppingList = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.id == shoppingListID)
                 .findAny().get();
-        return  ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
     }
 
-    @RequestMapping(value = "/getListsOfUSer/{userId}", method = RequestMethod.GET)
-    ResponseEntity<String> getListsOfUSer(@PathVariable("userId") int userId) {
+    @RequestMapping(value = "/getListsOfUser/{userId}", method = RequestMethod.GET)
+    ResponseEntity<String> getListsOfUser(@PathVariable("userId") int userId) {
 
         var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
         var lists = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.owner.equals(user))
                 .collect(Collectors.toList());
-        return  ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
     }
 
     @RequestMapping(value = "/shoppingList/{id}/item", method = RequestMethod.POST)
     ResponseEntity addItemToList(@PathVariable int id, @RequestBody String Item) {
-        var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id ).findFirst().get();
-        if(list == null) {
+        var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
+        if (list == null) {
             return Oh.Not.ok();
         }
         list.items.add(Item);
@@ -86,17 +84,25 @@ final class MainController {
     }
 
     @ModelAttribute
-    public void setVaryResponseHeader(HttpServletResponse response) {
+    public void setVaryResponseHeader(final HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }
+
+    @RequestMapping(value = "/getListsRelevantForUser/{userId}", method = RequestMethod.GET)
+    ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId) {
+
+
+        return Oh.ok();
+    }
 }
+
 class Oh {
     public static ResponseEntity ok() {
         return ResponseEntity.ok(null);
     }
 
     static class Not {
-        static public  ResponseEntity ok() {
+        static public ResponseEntity ok() {
             return ResponseEntity.badRequest().body(null);
         }
     }
