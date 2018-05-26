@@ -13,7 +13,7 @@ public enum Tag {
     BAKERY,
     PHARMACY,
     HARDWARE_STORE,
-    SEX_SHOP
+    SEX_SHOP;
 
     private static final List<Tag> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));
