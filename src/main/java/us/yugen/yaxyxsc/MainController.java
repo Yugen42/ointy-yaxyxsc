@@ -36,7 +36,7 @@ final class MainController {
 
         var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
         if( owner == null) {
-            return ResponseEntity.badRequest().body(null);
+            return Oh.Not.ok();
         }
 
         list.owner = owner;
@@ -78,7 +78,7 @@ final class MainController {
     ResponseEntity addItemToList(@PathVariable int id, @RequestBody String Item) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id ).findFirst().get();
         if(list == null) {
-            return ResponseEntity.badRequest().body(null);
+            return Oh.Not.ok();
         }
         list.items.add(Item);
         return Oh.ok();
@@ -86,7 +86,13 @@ final class MainController {
 }
 class Oh {
     public static ResponseEntity ok() {
-        return Oh.ok();
+        return ResponseEntity.ok(null);
+    }
+
+    static class Not {
+        static public  ResponseEntity ok() {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 }
