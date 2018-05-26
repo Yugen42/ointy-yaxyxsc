@@ -28,20 +28,20 @@ final class MainController {
     }
 
     @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.POST)
-    ResponseEntity.BodyBuilder postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
+    ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
         var list =  new Gson().fromJson(shoppingList,ShoppingList.class);
 
         var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
         if( owner == null) {
-            return ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().body(null);
         }
 
         list.owner = owner;
         list.id = DataStore.SHOPPING_LISTS.size();
         DataStore.SHOPPING_LISTS.add(list);
 
-        return ResponseEntity.ok();
+        return ResponseEntity.ok().body(null);
     }
 
     @RequestMapping(value = "/shoppingList/{shoppingListID}", method = RequestMethod.GET)
@@ -60,5 +60,15 @@ final class MainController {
                 .filter(list -> list.owner.equals(user))
                 .collect(Collectors.toList());
         return  ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
+    }
+
+    @RequestMapping(value = "/shoppingList/{id}/item", method = RequestMethod.POST)
+    ResponseEntity addItemToList(@PathVariable int id, @RequestBody String Item) {
+        var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id ).findFirst().get();
+        if(list == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        list.items.add(Item);
+        return ResponseEntity.ok(null);
     }
 }
