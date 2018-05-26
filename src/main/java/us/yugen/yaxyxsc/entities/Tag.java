@@ -24,7 +24,7 @@ public enum Tag {
         return VALUES.get(RANDOM.nextInt(SIZE));
     }
 
-    public Tag mapToTag(String type) {
+    public static Tag mapToTag(String type) {
         switch (type) {
             case "accounting":
             case "airport":

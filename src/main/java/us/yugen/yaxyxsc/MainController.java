@@ -23,6 +23,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
+import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
@@ -192,7 +193,15 @@ class MainController extends WebMvcConfigurationSupport {
         List<Place> places = client.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
         List<JSONObject> jsons = new ArrayList<>();
 
+
+
         for (Place place : places) {
+
+            List<ShoppingList> relevantLists = new ArrayList<>();
+
+            for (String s : place.getTypes()) {
+                Tag.mapToTag(s);
+            }
 
 
             jsons.add(place.getJson());
