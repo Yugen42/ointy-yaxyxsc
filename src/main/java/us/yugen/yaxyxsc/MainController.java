@@ -18,13 +18,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
-import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +61,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
     }
 
-    @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.POST)
+    @PostMapping(value = "/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
         var list = new Gson().fromJson(shoppingList, ShoppingList.class);
@@ -82,7 +79,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
 
-    @RequestMapping(value = "/{ownerId}/shoppingList", method = RequestMethod.GET)
+    @GetMapping(value = "/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId) {
 
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.owner.id == ownerId).collect(Collectors.toList());
@@ -91,7 +88,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
 
-    @RequestMapping(value = "/shoppingList/{shoppingListID}", method = RequestMethod.GET)
+    @GetMapping(value = "/shoppingList/{shoppingListID}")
     ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") int shoppingListID) {
         var shoppingList = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.id == shoppingListID)
@@ -99,7 +96,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
     }
 
-    @RequestMapping(value = "/getListsOfUser/{userId}", method = RequestMethod.GET)
+    @GetMapping(value = "/getListsOfUser/{userId}")
     ResponseEntity<String> getListsOfUser(@PathVariable("userId") int userId) {
 
         var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
@@ -109,7 +106,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
     }
 
-    @RequestMapping(value = "/shoppingList/{id}/item", method = RequestMethod.POST)
+    @PostMapping(value = "/shoppingList/{id}/item")
     ResponseEntity addItemToList(@PathVariable final int id, @RequestBody final String Item) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
         if (list == null) {
@@ -119,7 +116,7 @@ class MainController extends WebMvcConfigurationSupport {
         return Oh.ok();
     }
 
-    @RequestMapping(value = "/shoppingList/{id}/item/{index}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/shoppingList/{id}/item/{index}")
     ResponseEntity removeItemFromListByIndex(@PathVariable final int id, @PathVariable final int index) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
         if (list == null) {
@@ -134,7 +131,7 @@ class MainController extends WebMvcConfigurationSupport {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
-    @RequestMapping(value = "/getListsRelevantForUser/{userId}/{lang}/{log}", method = RequestMethod.GET)
+    @GetMapping(value = "/getListsRelevantForUser/{userId}/{lang}/{log}")
     ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
                                                    @PathVariable("lang") final double lang,
                                                    @PathVariable("log") final double log) {
