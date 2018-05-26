@@ -62,7 +62,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
     }
 
-    @RequestMapping("/claimShoppingList/{list}/{claimer}")
+    @PostMapping("/claimShoppingList/{list}/{claimer}")
     @ResponseBody
     ResponseEntity claimShoppingList(@PathVariable("list") int list, @PathVariable("claimer") int claimer) {
         var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == list).findFirst().get();
@@ -188,7 +188,7 @@ class MainController extends WebMvcConfigurationSupport {
                                                    @PathVariable("lang") final double latitude,
                                                    @PathVariable("log") final double longitude) {
 
-        final GooglePlacesInterface googlePlacesInterfaceq = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
+        final GooglePlacesInterface googlePlacesInterface = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
         final List<Place> places = googlePlacesInterface.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
 
         final Set<Tag> relevantTags = new HashSet<>();
