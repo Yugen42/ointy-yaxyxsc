@@ -29,10 +29,9 @@ public class DataStore {
         for (ShoppingList shoppingList : filteredByTag) {
             LatLng listCoord = new LatLng(shoppingList.owner.address.latitude, shoppingList.owner.address.longitude);
 
-            if(LatLngTool.distance(listCoord, coords, LengthUnit.KILOMETER) < 5) {
+            //if(LatLngTool.distance(listCoord, coords, LengthUnit.KILOMETER) < 5) {
                 filteredList.add(shoppingList);
-            }
-
+            //}
         }
         return filteredList;
     }

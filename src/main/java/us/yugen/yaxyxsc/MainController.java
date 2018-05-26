@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import se.walkercrou.places.GooglePlaces;
+import se.walkercrou.places.GooglePlacesInterface;
 import se.walkercrou.places.Place;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -21,10 +22,7 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -33,7 +31,7 @@ import java.util.stream.Collectors;
 @Configuration
 class MainController extends WebMvcConfigurationSupport {
     private static final Gson GSON = new Gson();
-    private static final double DIST = 0.05d;
+    private static final GooglePlacesInterface GOOGLE_PLACES_CLIENT = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
 
     public MainController() {
     }
@@ -49,7 +47,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
     @Override
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+    protected void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
 
@@ -95,7 +93,7 @@ class MainController extends WebMvcConfigurationSupport {
     @RequestMapping("/closeShoppingList/{listId}")
     @ResponseBody
     ResponseEntity closeShoppinglist(@PathVariable("listId") int listId) {
-        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == listId).findFirst().get();
+        final var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == listId).findFirst().get();
         shoppinglist.items.clear();
         shoppinglist.claimedByUser = null;
         if (shoppinglist != null) {
@@ -109,10 +107,10 @@ class MainController extends WebMvcConfigurationSupport {
     @PostMapping("/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
-        var list = new Gson().fromJson(shoppingList, ShoppingList.class);
+        final var list = new Gson().fromJson(shoppingList, ShoppingList.class);
 
-        var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
-        if (owner == null) {
+        final var owner = DataStore.USERS.stream().filter((localUser) -> localUser.id == ownerId).findAny().get();
+        if (null == owner) {
             return Oh.Not.ok();
         }
 
@@ -181,21 +179,19 @@ class MainController extends WebMvcConfigurationSupport {
                                                    @PathVariable("lang") final double latitude,
                                                    @PathVariable("log") final double longitude) {
 
-        GooglePlaces client = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
-
-        List<Place> places = client.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
+        final List<Place> places = GOOGLE_PLACES_CLIENT.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
 
         final Set<Tag> relevantTags = new HashSet<>();
 
-        for (Place place : places) {
+        for (final Place place : places) {
 
-            for (String s : place.getTypes()) {
+            for (final String s : place.getTypes()) {
                 relevantTags.add(Tag.mapToTag(s));
             }
         }
 
-        final Set<ShoppingList> shoppingLists = new HashSet<>();
-        for (Tag relevantTag : relevantTags) {
+        final Collection<ShoppingList> shoppingLists = new HashSet<>();
+        for (final Tag relevantTag : relevantTags) {
             shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, longitude, latitude));
         }
 
@@ -207,7 +203,7 @@ class MainController extends WebMvcConfigurationSupport {
     @ResponseBody
     final ResponseEntity<String> abandonHope() {
 
-        String abandonIt = "Through me you pass into the city of woe:\n" +
+        final String abandonIt = "Through me you pass into the city of woe:\n" +
                 "Through me you pass into eternal pain:\n" +
                 "Through me among the people lost for aye.\n" +
                 "\n" +
@@ -223,7 +219,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 }
 
-class Oh {
+final class Oh {
     static ResponseEntity ok() {
         return ResponseEntity.ok("ok");
     }
