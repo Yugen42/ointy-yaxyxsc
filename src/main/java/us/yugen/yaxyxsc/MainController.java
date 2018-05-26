@@ -86,6 +86,32 @@ class MainController extends WebMvcConfigurationSupport {
 
     }
 
+    @RequestMapping("/getClaimedShoppingList/{userID}")
+    @ResponseBody
+    ResponseEntity claimShoppingList(@PathVariable("userID") int userId) {
+        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.claimedByUser != null && currList.claimedByUser.id == userId ).findFirst().get();
+
+        if (shoppinglist != null) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppinglist));
+        } else {
+            return Oh.Not.ok();
+        }
+    }
+    @RequestMapping("/closeShoppingList/{listId}")
+    @ResponseBody
+    ResponseEntity closeShoppinglist(@PathVariable("listId") int listId) {
+        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == listId).findFirst().get();
+            shoppinglist.items.clear();
+            shoppinglist.claimedByUser = null;
+        if (shoppinglist != null) {
+            return Oh.ok();
+        } else {
+            return Oh.Not.ok();
+        }
+    }
+
+
+
     @PostMapping(value = "/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
@@ -180,6 +206,8 @@ class MainController extends WebMvcConfigurationSupport {
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(jsons));
     }
+
+
 
     @RequestMapping("/")
     @ResponseBody

@@ -27,9 +27,11 @@ public class MockData {
         return IntStream.range(0, amount).mapToObj((i) -> {
             var user = new User(i, faker.name().firstName(), faker.name().lastName(), getRandomAddress());
             if (new Random().nextInt(100) >= -1) {
-                final ShoppingList randomShoppingList = getRandomShoppingList(user);
-                DataStore.SHOPPING_LISTS.add(randomShoppingList);
-                DataStore.SHOPPING_LISTS_BY_TAG.get(randomShoppingList.tag);
+                for(var tag : Tag.values()) {
+                    final ShoppingList randomShoppingList = getRandomShoppingList(user, tag);
+                    DataStore.SHOPPING_LISTS.add(randomShoppingList);
+                    DataStore.SHOPPING_LISTS_BY_TAG.get(randomShoppingList.tag);
+                }
             }
             return user;
         }).collect((Collectors.toList()));
@@ -40,10 +42,10 @@ public class MockData {
         return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), faker.address().streetPrefix() + faker.address().streetName() + faker.address().streetSuffix(), new Random().nextInt(5000));
     }
 
-    static ShoppingList getRandomShoppingList(User owner) {
+    static ShoppingList getRandomShoppingList(User owner, Tag tag) {
         var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
 
-        return new ShoppingList(owner, Tag.randomTag(), items);
+        return new ShoppingList(owner, tag, items);
     }
 
     static LatLng getNearPos(double distanceInKm) {
