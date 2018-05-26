@@ -21,6 +21,7 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,13 +82,14 @@ class MainController extends WebMvcConfigurationSupport {
     @RequestMapping("/getClaimedShoppingList/{userID}")
     @ResponseBody
     ResponseEntity claimShoppingList(@PathVariable("userID") int userId) {
-        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.claimedByUser != null && currList.claimedByUser.id == userId).findFirst().get();
-
-        if (shoppinglist != null) {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppinglist));
-        } else {
-            return Oh.Not.ok();
+        List<ShoppingList> result = new ArrayList<>();
+        for (ShoppingList currList : DataStore.SHOPPING_LISTS) {
+            if (currList.claimedByUser != null && currList.claimedByUser.id == userId) {
+                result.add(currList);
+                break;
+            }
         }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(result));
     }
 
     @RequestMapping("/closeShoppingList/{listId}")
