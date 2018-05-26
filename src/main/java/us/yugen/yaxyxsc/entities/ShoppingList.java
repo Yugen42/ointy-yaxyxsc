@@ -14,6 +14,7 @@ public class ShoppingList {
     public Tag tag;
     public List<String> items = new ArrayList<>();
     public int id = nextID++;
+    public User claimedByUser = null;
 
     public ShoppingList(User owner, Tag tag, List<String> items) {
         this.owner = owner;

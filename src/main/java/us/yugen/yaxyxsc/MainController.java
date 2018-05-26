@@ -21,6 +21,8 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ class MainController extends WebMvcConfigurationSupport {
                 .build();
 
     }
+
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
@@ -47,6 +50,7 @@ class MainController extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
+
     private static final Gson GSON = new Gson();
     private static final double DIST = 0.05d;
 
@@ -59,6 +63,21 @@ class MainController extends WebMvcConfigurationSupport {
     final ResponseEntity<List<ShoppingList>> getShoppingLists() {
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(DataStore.SHOPPING_LISTS);
+    }
+
+    @RequestMapping("/claimShoppingList/{list}/{claimer}")
+    @ResponseBody
+    ResponseEntity claimShoppingList(@PathVariable("list") int list, @PathVariable("claimer") int claimer) {
+        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == list).findFirst().get();
+        var user = DataStore.USERS.stream().filter(currUSer -> currUSer.id == claimer).findFirst().get();
+
+        if (shoppinglist != null && user != null) {
+            shoppinglist.claimedByUser = user;
+            return Oh.ok();
+        } else {
+            return Oh.Not.ok();
+        }
+
     }
 
     @PostMapping(value = "/{ownerId}/shoppingList")
@@ -138,8 +157,8 @@ class MainController extends WebMvcConfigurationSupport {
 
         List<ShoppingList> results = new ArrayList<>();
 
-        final LatLng curPoss = new LatLng(lang,log);
-        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c&location="+lang+","+log+"&radius=100";
+        final LatLng curPoss = new LatLng(lang, log);
+        var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c&location=" + lang + "," + log + "&radius=100";
         var body = Unirest.get(url);
 
         System.out.println(body);
