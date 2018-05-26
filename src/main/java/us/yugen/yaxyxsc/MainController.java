@@ -2,10 +2,19 @@ package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
@@ -18,13 +27,32 @@ import java.util.stream.Collectors;
 
 @Controller
 @EnableAutoConfiguration
-final class MainController {
+@EnableSwagger2
+@Configuration
+class MainController extends WebMvcConfigurationSupport {
+    @Bean
+    public Docket productApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
 
+    }
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
     private static final Gson GSON = new Gson();
     private static final double DIST = 0.05d;
 
-    private MainController() {
+    public MainController() {
     }
+
 
     @RequestMapping("/shoppingLists")
     @ResponseBody

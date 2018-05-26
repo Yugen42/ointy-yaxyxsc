@@ -48,9 +48,10 @@ public class MockData {
 
     static LatLng getNearPos(double distanceInKm) {
         LatLng nextpos = null;
+        var i = 0;
         do {
             nextpos = LatLng.random();
-        } while (LatLngTool.distance(pos, nextpos, LengthUnit.KILOMETER) > distanceInKm);
+        } while (LatLngTool.distance(pos, nextpos, LengthUnit.KILOMETER) > distanceInKm && false);
         return nextpos;
     }
 
