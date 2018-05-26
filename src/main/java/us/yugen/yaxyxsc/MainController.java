@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @Configuration
 class MainController extends WebMvcConfigurationSupport {
     private static final Gson GSON = new Gson();
-    private static final GooglePlacesInterface GOOGLE_PLACES_CLIENT = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
 
     public MainController() {
     }
@@ -189,7 +188,8 @@ class MainController extends WebMvcConfigurationSupport {
                                                    @PathVariable("lang") final double latitude,
                                                    @PathVariable("log") final double longitude) {
 
-        final List<Place> places = GOOGLE_PLACES_CLIENT.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
+        final GooglePlacesInterface googlePlacesInterfaceq = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
+        final List<Place> places = googlePlacesInterface.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
 
         final Set<Tag> relevantTags = new HashSet<>();
 
