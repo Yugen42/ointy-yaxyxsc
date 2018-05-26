@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import us.yugen.yaxyxsc.entities.ShoppingList;
+import us.yugen.yaxyxsc.entities.Tag;
+import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 final class MainController {
 
     private static final Gson GSON = new Gson();
+    private static final double DIST = 0.05d;
 
     private MainController() {
     }
@@ -95,14 +99,35 @@ final class MainController {
 
         List<ShoppingList> results = new ArrayList<>();
 
-        DataStore.SHOPPING_LISTS
+        final Tag tagEnum = Tag.valueOf(tag);
 
-        return Oh.ok();
+        User u = null;
+        final List<User> users = DataStore.USERS;
+        for (User user : users) {
+            if (user.id == userId) {
+                u = user;
+                break;
+            }
+        }
+        if (null == u) return Oh.Not.ok();
+
+
+        final List<ShoppingList> listOfLists = DataStore.SHOPPING_LISTS_BY_TAG.getOrDefault(tagEnum, Collections.emptyList());
+
+        for (final ShoppingList list : listOfLists) {
+
+            var d = Math.sqrt(Math.pow(list.owner.address.latitude - u.address.latitude, 2.0d) + Math.pow(list.owner.address.longitude - u.address.longitude, 2.0d));
+            if (d > DIST || d < DIST * -1) {
+                results.add(list);
+            }
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(results));
     }
 }
 
 class Oh {
-    public static ResponseEntity ok() {
+    static ResponseEntity ok() {
         return ResponseEntity.ok(null);
     }
 
