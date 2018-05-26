@@ -124,6 +124,25 @@ final class MainController {
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(results));
     }
+
+    @RequestMapping("/")
+    @ResponseBody
+    final ResponseEntity<String> abandonHope() {
+
+        String abandonIt = "Through me you pass into the city of woe:\n" +
+                "Through me you pass into eternal pain:\n" +
+                "Through me among the people lost for aye.\n" +
+                "\n" +
+                "Justice the founder of my fabric mov'd:\n" +
+                "To rear me was the task of power divine,\n" +
+                "Supremest wisdom, and primeval love.\n" +
+                "\n" +
+                "Before me things create were none, save things\n" +
+                "Eternal, and eternal I endure.\n" +
+                "All hope abandon ye who enter here.";
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(abandonIt);
+    }
 }
 
 class Oh {
