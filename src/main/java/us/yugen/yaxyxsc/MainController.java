@@ -1,10 +1,6 @@
 package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
-import com.javadocmd.simplelatlng.LatLng;
-import com.mashape.unirest.http.Unirest;
-import org.apache.http.client.methods.HttpPost;
-import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Place;
-import se.walkercrou.places.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -24,14 +19,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
-import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.crypto.Data;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +81,7 @@ class MainController extends WebMvcConfigurationSupport {
     @RequestMapping("/getClaimedShoppingList/{userID}")
     @ResponseBody
     ResponseEntity claimShoppingList(@PathVariable("userID") int userId) {
-        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.claimedByUser != null && currList.claimedByUser.id == userId ).findFirst().get();
+        var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.claimedByUser != null && currList.claimedByUser.id == userId).findFirst().get();
 
         if (shoppinglist != null) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppinglist));
@@ -100,12 +89,13 @@ class MainController extends WebMvcConfigurationSupport {
             return Oh.Not.ok();
         }
     }
+
     @RequestMapping("/closeShoppingList/{listId}")
     @ResponseBody
     ResponseEntity closeShoppinglist(@PathVariable("listId") int listId) {
         var shoppinglist = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == listId).findFirst().get();
-            shoppinglist.items.clear();
-            shoppinglist.claimedByUser = null;
+        shoppinglist.items.clear();
+        shoppinglist.claimedByUser = null;
         if (shoppinglist != null) {
             return Oh.ok();
         } else {
@@ -114,8 +104,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
 
-
-    @PostMapping(value = "/{ownerId}/shoppingList")
+    @PostMapping("/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId, @RequestBody String shoppingList) {
 
         var list = new Gson().fromJson(shoppingList, ShoppingList.class);
@@ -133,7 +122,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
 
-    @GetMapping(value = "/{ownerId}/shoppingList")
+    @GetMapping("/{ownerId}/shoppingList")
     ResponseEntity<Object> postShoppingList(@PathVariable int ownerId) {
 
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.owner.id == ownerId).collect(Collectors.toList());
@@ -142,7 +131,7 @@ class MainController extends WebMvcConfigurationSupport {
     }
 
 
-    @GetMapping(value = "/shoppingList/{shoppingListID}")
+    @GetMapping("/shoppingList/{shoppingListID}")
     ResponseEntity<String> getShopStringList(@PathVariable("shoppingListID") int shoppingListID) {
         var shoppingList = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.id == shoppingListID)
@@ -150,7 +139,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingList));
     }
 
-    @GetMapping(value = "/getListsOfUser/{userId}")
+    @GetMapping("/getListsOfUser/{userId}")
     ResponseEntity<String> getListsOfUser(@PathVariable("userId") int userId) {
 
         var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
@@ -160,7 +149,7 @@ class MainController extends WebMvcConfigurationSupport {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
     }
 
-    @PostMapping(value = "/shoppingList/{id}/item")
+    @PostMapping("/shoppingList/{id}/item")
     ResponseEntity addItemToList(@PathVariable final int id, @RequestBody final String Item) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
         if (list == null) {
@@ -170,7 +159,7 @@ class MainController extends WebMvcConfigurationSupport {
         return Oh.ok();
     }
 
-    @DeleteMapping(value = "/shoppingList/{id}/item/{index}")
+    @DeleteMapping("/shoppingList/{id}/item/{index}")
     ResponseEntity removeItemFromListByIndex(@PathVariable final int id, @PathVariable final int index) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
         if (list == null) {
@@ -185,7 +174,7 @@ class MainController extends WebMvcConfigurationSupport {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
-    @GetMapping(value = "/getListsRelevantForUser/{userId}/{lang}/{log}")
+    @GetMapping("/getListsRelevantForUser/{userId}/{lang}/{log}")
     ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
                                                    @PathVariable("lang") final double latitude,
                                                    @PathVariable("log") final double longitude) {
@@ -205,12 +194,11 @@ class MainController extends WebMvcConfigurationSupport {
 
         final Set<ShoppingList> shoppingLists = new HashSet<>();
         for (Tag relevantTag : relevantTags) {
-           shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, longitude, latitude));
+            shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, longitude, latitude));
         }
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
     }
-
 
 
     @RequestMapping("/")

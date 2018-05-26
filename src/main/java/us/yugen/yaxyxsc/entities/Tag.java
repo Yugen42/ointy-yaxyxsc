@@ -1,7 +1,6 @@
 package us.yugen.yaxyxsc.entities;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
@@ -12,18 +11,18 @@ public enum Tag {
     GROCERY_STORE,
     BAKERY,
     PHARMACY,
-    HARDWARE_STORE;
+    HARDWARE_STORE,
+    SEX_SHOP;
 
-    private static final List<Tag> VALUES =
-            Collections.unmodifiableList(Arrays.asList(values()));
+    private static final List<Tag> VALUES = List.of(values());
     private static final int SIZE = VALUES.size();
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new SecureRandom();
 
     public static Tag randomTag() {
         return VALUES.get(RANDOM.nextInt(SIZE));
     }
 
-    public static Tag mapToTag(String type) {
+    public static Tag mapToTag(final String type) {
         switch (type) {
             case "accounting":
             case "airport":
@@ -115,7 +114,8 @@ public enum Tag {
             case "travel_agency":
             case "veterinary_care":
             case "zoo":
-            default: return GROCERY_STORE;
+            default:
+                return SEX_SHOP;
         }
     }
 }
