@@ -9,7 +9,6 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -27,7 +26,9 @@ public class MockData {
         return IntStream.range(0, amount).mapToObj((i) -> {
             var user = new User(i, faker.name().firstName(), faker.name().lastName(), getRandomAddress());
             if (new Random().nextInt(100) >= -1) {
-                DataStore.SHOPPING_LISTS.add(getRandomShopingLists(user));
+                final ShoppingList randomShoppingList = getRandomShoppingList(user);
+                DataStore.SHOPPING_LISTS.add(randomShoppingList);
+                DataStore.SHOPPING_LISTS_BY_TAG.get(randomShoppingList.tag);
             }
             return user;
         }).collect((Collectors.toList()));
@@ -38,7 +39,7 @@ public class MockData {
         return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), faker.address().streetPrefix() + faker.address().streetName() + faker.address().streetSuffix(), new Random().nextInt(5000));
     }
 
-    static ShoppingList getRandomShopingLists(User owner) {
+    static ShoppingList getRandomShoppingList(User owner) {
         var items = IntStream.range(0, new Random().nextInt(15) + 1).mapToObj((i) -> i % 2 == 0 ? faker.food().ingredient() : faker.commerce().productName()).collect(Collectors.toList());
 
         return new ShoppingList(owner, Tag.randomTag(), items);

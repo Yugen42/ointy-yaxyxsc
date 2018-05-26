@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ final class MainController {
     }
 
     @RequestMapping(value = "/shoppingList/{id}/item", method = RequestMethod.POST)
-    ResponseEntity addItemToList(@PathVariable int id, @RequestBody String Item) {
+    ResponseEntity addItemToList(@PathVariable final int id, @RequestBody final String Item) {
         var list = DataStore.SHOPPING_LISTS.stream().filter((currList) -> currList.id == id).findFirst().get();
         if (list == null) {
             return Oh.Not.ok();
@@ -88,9 +89,13 @@ final class MainController {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
-    @RequestMapping(value = "/getListsRelevantForUser/{userId}", method = RequestMethod.GET)
-    ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId) {
+    @RequestMapping(value = "/getListsRelevantForUser/{userId}/{tag}", method = RequestMethod.GET)
+    ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
+                                                   @PathVariable("tag") final String tag) {
 
+        List<ShoppingList> results = new ArrayList<>();
+
+        DataStore.SHOPPING_LISTS
 
         return Oh.ok();
     }
