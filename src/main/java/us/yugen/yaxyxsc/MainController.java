@@ -11,6 +11,8 @@ import us.yugen.yaxyxsc.entities.ShoppingList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javafx.scene.input.KeyCode.T;
+
 @Controller
 @EnableAutoConfiguration
 final class MainController {
@@ -69,6 +71,12 @@ final class MainController {
             return ResponseEntity.badRequest().body(null);
         }
         list.items.add(Item);
-        return ResponseEntity.ok(null);
+        return Oh.ok();
     }
+}
+class Oh {
+    public static ResponseEntity ok() {
+        return Oh.ok();
+    }
+    
 }
