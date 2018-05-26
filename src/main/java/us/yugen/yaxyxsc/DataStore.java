@@ -19,6 +19,9 @@ public class DataStore {
 
     public static List<ShoppingList> getShoppingListsByTagInArea(Tag tag, double longitude, double latitude) {
         List<ShoppingList> filteredByTag = SHOPPING_LISTS_BY_TAG.get(tag);
+
+        if(filteredByTag == null) return new ArrayList<>();
+
         final LatLng coords = new LatLng(latitude, longitude);
 
         List<ShoppingList> filteredList = new ArrayList<>();
