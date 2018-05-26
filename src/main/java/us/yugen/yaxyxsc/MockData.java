@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 import us.yugen.yaxyxsc.entities.Address;
 import us.yugen.yaxyxsc.entities.ShoppingList;
 import us.yugen.yaxyxsc.entities.Tag;
@@ -20,7 +21,7 @@ public class MockData {
     }
 
     static Faker faker = new Faker();
-    static String[] cats = {"backery", "other_stuff", "drug_store"};
+    static LatLng pos = LatLng.random();
 
     static private List<User> generateUser(int amount) {
         return IntStream.range(0, amount).mapToObj((i) -> {
@@ -35,7 +36,7 @@ public class MockData {
     }
 
     static Address getRandomAddress() {
-        var pos = LatLng.random();
+        var pos = getNearPos(15);
         return new Address(pos.getLongitude(), pos.getLatitude(), new Random().nextInt(95000), faker.address().city(), faker.address().streetPrefix() + faker.address().streetName() + faker.address().streetSuffix(), new Random().nextInt(5000));
     }
 
@@ -45,6 +46,13 @@ public class MockData {
         return new ShoppingList(owner, Tag.randomTag(), items);
     }
 
+    static LatLng getNearPos(double distanceInKm) {
+        LatLng nextpos = null;
+        do {
+            nextpos = LatLng.random();
+        } while (LatLngTool.distance(pos, nextpos, LengthUnit.KILOMETER) > distanceInKm);
+        return nextpos;
+    }
 
     static String getRandom(String[] array) {
         int rnd = new Random().nextInt(array.length);
