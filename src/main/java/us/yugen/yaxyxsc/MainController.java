@@ -152,8 +152,8 @@ class MainController extends WebMvcConfigurationSupport {
     @GetMapping("/getListsOfUser/{userId}")
     ResponseEntity<String> getListsOfUser(@PathVariable("userId") final int userId) {
 
-        var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
-        var lists = DataStore.SHOPPING_LISTS.stream()
+        final var user = DataStore.USERS.stream().filter((currUser) -> currUser.id == userId).findFirst().get();
+        final var lists = DataStore.SHOPPING_LISTS.stream()
                 .filter(list -> list.owner.equals(user))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(lists));
@@ -193,7 +193,7 @@ class MainController extends WebMvcConfigurationSupport {
 
         final Set<Tag> relevantTags = new HashSet<>();
 
-        for (final Place place : places) {
+        for (final var place : places) {
 
             for (final String s : place.getTypes()) {
                 relevantTags.add(Tag.mapToTag(s));
@@ -201,7 +201,7 @@ class MainController extends WebMvcConfigurationSupport {
         }
 
         User foundUser = null;
-        for (User user : DataStore.USERS) {
+        for (final User user : DataStore.USERS) {
             if(user.id == userId) {
                 foundUser = user;
             }
