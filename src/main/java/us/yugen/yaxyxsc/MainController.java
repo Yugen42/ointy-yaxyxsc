@@ -1,6 +1,16 @@
 package us.yugen.yaxyxsc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +26,7 @@ import se.walkercrou.places.Place;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.json.Json;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import us.yugen.yaxyxsc.entities.ShoppingList;
@@ -23,6 +34,8 @@ import us.yugen.yaxyxsc.entities.Tag;
 import us.yugen.yaxyxsc.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -187,33 +200,50 @@ class MainController extends WebMvcConfigurationSupport {
     ResponseEntity<String> getListsRelevantForUser(@PathVariable("userId") final int userId,
                                                    @PathVariable("lang") final double latitude,
                                                    @PathVariable("log") final double longitude) {
+        OkHttpClient client = new OkHttpClient();
 
-        final GooglePlacesInterface googlePlacesInterface = new GooglePlaces("AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c", new UltimateRequestHandler());
-        final List<Place> places = googlePlacesInterface.getNearbyPlaces(latitude, longitude, 100, GooglePlaces.MAXIMUM_RESULTS);
+        Request request = new Request.Builder()
+                .url("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyDY1cPfXT1w_iywCZFFMuXFkPm3K3XDT-c&location="+latitude+","+longitude+"&radius=100")
+                .build();
 
-        final Set<Tag> relevantTags = new HashSet<>();
 
-        for (final var place : places) {
 
-            for (final String s : place.getTypes()) {
-                relevantTags.add(Tag.mapToTag(s));
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            JsonElement json = new JsonParser().parse(response.body().string());
+
+            JsonArray places = json.getAsJsonObject().getAsJsonArray("results");
+
+            final Set<Tag> relevantTags = new HashSet<>();
+
+            for (final JsonElement place : places) {
+
+                final JsonArray types = place.getAsJsonObject().getAsJsonArray("types");
+
+                for (final JsonElement type : types) {
+                    relevantTags.add(Tag.mapToTag(type.getAsString()));
+                }
             }
-        }
 
-        User foundUser = null;
-        for (final User user : DataStore.USERS) {
-            if(user.id == userId) {
-                foundUser = user;
+            User foundUser = null;
+            for (final User user : DataStore.USERS) {
+                if(user.id == userId) {
+                    foundUser = user;
+                }
             }
+
+
+            final Collection<ShoppingList> shoppingLists = new HashSet<>();
+            for (final Tag relevantTag : relevantTags) {
+                shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, foundUser.address.longitude, foundUser.address.latitude));
+            }
+
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("not");
         }
-
-
-        final Collection<ShoppingList> shoppingLists = new HashSet<>();
-        for (final Tag relevantTag : relevantTags) {
-            shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, foundUser.address.longitude, foundUser.address.latitude));
-        }
-
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
     }
 
 
