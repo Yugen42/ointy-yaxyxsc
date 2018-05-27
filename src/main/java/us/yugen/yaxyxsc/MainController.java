@@ -274,7 +274,7 @@ class MainController extends WebMvcConfigurationSupport {
 
 final class Oh {
     static ResponseEntity ok() {
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("{\"ok\":\"ok\"}");
     }
 
     static class Not {
