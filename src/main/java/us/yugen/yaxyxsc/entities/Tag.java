@@ -10,9 +10,7 @@ import java.util.Random;
 public enum Tag {
     GROCERY_STORE,
     BAKERY,
-    PHARMACY,
-    HARDWARE_STORE,
-    SEX_SHOP;
+    PHARMACY;
 
     private static final List<Tag> VALUES = List.of(values());
     private static final int SIZE = VALUES.size();
@@ -115,7 +113,7 @@ public enum Tag {
             case "veterinary_care":
             case "zoo":
             default:
-                return SEX_SHOP;
+                return GROCERY_STORE;
         }
     }
 }
