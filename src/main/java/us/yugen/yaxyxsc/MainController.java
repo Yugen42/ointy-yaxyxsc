@@ -239,11 +239,12 @@ class MainController extends WebMvcConfigurationSupport {
             }
 
 
-            final Collection<ShoppingList> shoppingLists = new HashSet<>();
+            Collection<ShoppingList> shoppingLists = new HashSet<>();
             for (final Tag relevantTag : relevantTags) {
                 shoppingLists.addAll(DataStore.getShoppingListsByTagInArea(relevantTag, foundUser.address.longitude, foundUser.address.latitude));
             }
 
+            shoppingLists = shoppingLists.stream().filter((list) -> list.items.size()> 0).collect(Collectors.toList());
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(GSON.toJson(shoppingLists));
         } catch (IOException e) {
             e.printStackTrace();
